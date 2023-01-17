@@ -33,7 +33,7 @@ public class ClientMapper {
         client.setEmail(clientCreateDto.getLoginInfo().getEmail());
         client.setPassword(clientCreateDto.getLoginInfo().getPassword());
         client.setUsername(clientCreateDto.getUsername());
-        client.setHasaccess(true);
+        //client.setHasaccess(true);
         client.setTempPassword("");
         client.setHasaccess(false);
         return client;

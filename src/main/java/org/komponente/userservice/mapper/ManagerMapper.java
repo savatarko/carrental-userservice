@@ -35,7 +35,7 @@ public class ManagerMapper {
         manager.setUsername(clientCreateDto.getUsername());
         manager.setHasaccess(true);
         manager.setTempPassword("");
-        manager.setHasaccess(false);
+        //manager.setHasaccess(false);
         manager.setCompanyid(clientCreateDto.getCompanyId());
         manager.setDateofemployment(clientCreateDto.getDateofemployment());
         return manager;

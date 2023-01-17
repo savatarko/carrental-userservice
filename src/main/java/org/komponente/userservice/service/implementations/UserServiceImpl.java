@@ -30,6 +30,7 @@ import javax.validation.constraints.Email;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -67,6 +68,9 @@ public class UserServiceImpl implements UserService {
             {
                 throw new AccessRevokedException("Access revoked! Contact a admin to get access back.");
             }
+            if(manager.getActivated() !=0){
+                throw new NotActivatedException("Account not activated! Check your email for activation link.");
+            }
             claims.put("id", manager.getId());
             claims.put("role", "ROLE_MANAGER");
             return new TokenResponseDto(tokenService.generate(claims));
@@ -78,6 +82,9 @@ public class UserServiceImpl implements UserService {
         if(client.getHasaccess() == false)
         {
             throw new AccessRevokedException("Access revoked! Contact a admin to get access back.");
+        }
+        if(client.getActivated() != 0){
+            throw new NotActivatedException("Account not activated! Check your email for activation link.");
         }
         claims.put("id", client.getId());
         claims.put("role", "ROLE_CLIENT");
@@ -110,6 +117,14 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyExistException("A user with this email already exists!");
         }
         Client client = ClientMapper.clientCreateDtoToClient(clientCreateDto);
+        Random random = new Random();
+        Long activation = random.nextLong() & Long.MAX_VALUE;
+        while(activation!=0 && clientRepository.findClientByActivated(activation).isPresent())
+        {
+            activation = random.nextLong() & Long.MAX_VALUE;
+        }
+        client.setActivated(activation);
+
         clientRepository.save(client);
         return ClientMapper.clientToClientDto(client);
     }
@@ -294,4 +309,20 @@ public class UserServiceImpl implements UserService {
         }
         clientRepository.save(client);
     }
+
+    @Override
+    public void activateAccount(Long confirmation) {
+        Manager manager = managerRepository.findManagerByActivated(confirmation).orElse(null);
+        if(manager!=null)
+        {
+            manager.setActivated(0L);
+            managerRepository.save(manager);
+            return;
+        }
+        Client client = clientRepository.findClientByActivated(confirmation).orElseThrow(()->new NotFoundException("User with confirmation " + confirmation +" not found!"));
+        client.setActivated(0L);
+        clientRepository.save(client);
+    }
+
+
 }

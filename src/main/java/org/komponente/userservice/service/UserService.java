@@ -32,4 +32,5 @@ public interface UserService {
     void changeAdmin(Long adminId, ChangeUserDto changeUserDto);
     void changeManager(Long managerId, ChangeUserDto changeUserDto);
     void changeClient(Long clientId, ChangeUserDto changeUserDto);
+    void activateAccount(Long confirmation);
 }

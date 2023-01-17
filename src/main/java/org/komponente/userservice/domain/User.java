@@ -40,7 +40,7 @@ public class User {
     private String password;
     private String salt;
 
-    private Boolean activated;
+    private Long activated;
 
     private String tempPassword;
 
