@@ -17,6 +17,7 @@ import org.komponente.userservice.service.implementations.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -102,19 +103,22 @@ public class UserController {
 
     @ApiOperation(value = "Confirm email")
     @PutMapping("/register/confirm/{id}")
-    public ResponseEntity<?> confirmEmail(@PathVariable Long id)
+    @CheckSecurity(roles = {"ROLE_ADMIN, ROLE_MANAGER, ROLE_CLIENT"})
+    public ResponseEntity<?> confirmEmail(@RequestHeader("Authorization") String authorization, @PathVariable Long id)
     {
         userService.activateAccount(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/manager/{id}")
-    public ResponseEntity<Long> getManagerCompanyId(@PathVariable Long id)
+    @CheckSecurity(roles = {"ROLE_ADMIN, ROLE_MANAGER, ROLE_CLIENT"})
+    public ResponseEntity<Long> getManagerCompanyId(@RequestHeader("Authorization") String authorization, @PathVariable Long id)
     {
         return new ResponseEntity<>(userService.getManagerCompanyId(id), HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id)
+    @CheckSecurity(roles = {"ROLE_ADMIN, ROLE_MANAGER, ROLE_CLIENT"})
+    public ResponseEntity<UserDto> getUserById(@RequestHeader("Authorization") String authorization, @PathVariable Long id)
     {
         return new ResponseEntity<>(userService.findUser(id), HttpStatus.OK);
     }

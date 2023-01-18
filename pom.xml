@@ -108,6 +108,14 @@
 			<version>2.2.0.RELEASE</version>
 		</dependency>
 
+		<!-- retry -->
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-retry</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+
 	</dependencies>
 
 

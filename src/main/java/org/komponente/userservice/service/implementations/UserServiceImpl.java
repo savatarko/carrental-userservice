@@ -1,5 +1,6 @@
 package org.komponente.userservice.service.implementations;
 
+import io.github.resilience4j.retry.Retry;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 //import jakarta.transaction.Transactional;
@@ -51,13 +52,15 @@ public class UserServiceImpl implements UserService {
     private ManagerRepository managerRepository;
     private TokenService tokenService;
     private RankRepository rankRepository;
+    private Retry rentalServiceRetry;
 
-    public UserServiceImpl(AdminRepository adminRepository, ClientRepository clientRepository, ManagerRepository managerRepository, TokenService tokenService, RankRepository rankRepository) {
+    public UserServiceImpl(AdminRepository adminRepository, ClientRepository clientRepository, ManagerRepository managerRepository, TokenService tokenService, RankRepository rankRepository, Retry rentalServiceRetry) {
         this.adminRepository = adminRepository;
         this.clientRepository = clientRepository;
         this.managerRepository = managerRepository;
         this.tokenService = tokenService;
         this.rankRepository = rankRepository;
+        this.rentalServiceRetry = rentalServiceRetry;
     }
 
     private void sendMessage(Serializable content, String queueName) {
