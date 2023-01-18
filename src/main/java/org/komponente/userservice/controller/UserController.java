@@ -9,6 +9,7 @@ import org.komponente.dto.manager.ManagerDto;
 import org.komponente.dto.token.TokenRequestDto;
 import org.komponente.dto.token.TokenResponseDto;
 import org.komponente.dto.user.ChangeUserDto;
+import org.komponente.dto.user.UserDto;
 import org.komponente.userservice.security.CheckSecurity;
 import org.komponente.userservice.security.token.TokenService;
 import org.komponente.userservice.service.UserService;
@@ -97,5 +98,24 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ApiOperation(value = "Confirm email")
+    @PutMapping("/register/confirm/{id}")
+    public ResponseEntity<?> confirmEmail(@PathVariable Long id)
+    {
+        userService.activateAccount(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/manager/{id}")
+    public ResponseEntity<Long> getManagerCompanyId(@PathVariable Long id)
+    {
+        return new ResponseEntity<>(userService.getManagerCompanyId(id), HttpStatus.OK);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id)
+    {
+        return new ResponseEntity<>(userService.findUser(id), HttpStatus.OK);
     }
 }

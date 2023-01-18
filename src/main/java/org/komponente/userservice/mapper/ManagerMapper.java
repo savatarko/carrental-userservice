@@ -5,6 +5,7 @@ import org.komponente.dto.manager.ManagerCreateDto;
 import org.komponente.dto.manager.ManagerDto;
 import org.komponente.userservice.domain.Client;
 import org.komponente.userservice.domain.Manager;
+import org.komponente.userservice.security.PasswordSecurity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,14 +31,17 @@ public class ManagerMapper {
         manager.setSurname(clientCreateDto.getSurname());
         manager.setNumber(clientCreateDto.getNumber());
         manager.setDateofbirth(clientCreateDto.getDateofbirth());
-        manager.setEmail(clientCreateDto.getLoginInfo().getEmail());
-        manager.setPassword(clientCreateDto.getLoginInfo().getPassword());
+        //manager.setEmail(clientCreateDto.getLoginInfo().getEmail());
+        //manager.setPassword(clientCreateDto.getLoginInfo().getPassword());
+        manager.setEmail(clientCreateDto.getEmail());
+        //manager.setPassword(clientCreateDto.getPassword());
         manager.setUsername(clientCreateDto.getUsername());
         manager.setHasaccess(true);
         manager.setTempPassword("");
         //manager.setHasaccess(false);
         manager.setCompanyid(clientCreateDto.getCompanyId());
         manager.setDateofemployment(clientCreateDto.getDateofemployment());
+        manager.setPassword(PasswordSecurity.toHexString(PasswordSecurity.getSHA(clientCreateDto.getPassword())));
         return manager;
     }
 }

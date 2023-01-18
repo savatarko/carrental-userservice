@@ -10,6 +10,7 @@ import org.komponente.dto.rank.RankDto;
 import org.komponente.dto.token.TokenRequestDto;
 import org.komponente.dto.token.TokenResponseDto;
 import org.komponente.dto.user.ChangeUserDto;
+import org.komponente.dto.user.UserDto;
 import org.komponente.userservice.domain.Rank;
 
 public interface UserService {
@@ -33,4 +34,6 @@ public interface UserService {
     void changeManager(Long managerId, ChangeUserDto changeUserDto);
     void changeClient(Long clientId, ChangeUserDto changeUserDto);
     void activateAccount(Long confirmation);
+    Long getManagerCompanyId(Long id);
+    UserDto findUser(Long id);
 }

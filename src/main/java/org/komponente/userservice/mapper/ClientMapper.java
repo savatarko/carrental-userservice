@@ -3,7 +3,10 @@ package org.komponente.userservice.mapper;
 import org.komponente.dto.client.ClientCreateDto;
 import org.komponente.dto.client.ClientDto;
 import org.komponente.userservice.domain.Client;
+import org.komponente.userservice.security.PasswordSecurity;
 import org.springframework.stereotype.Component;
+
+import java.security.MessageDigest;
 
 @Component
 public class ClientMapper {
@@ -30,12 +33,15 @@ public class ClientMapper {
         client.setNumber(clientCreateDto.getNumber());
         client.setDateofbirth(clientCreateDto.getDateofbirth());
         client.setPassport(clientCreateDto.getPassport());
-        client.setEmail(clientCreateDto.getLoginInfo().getEmail());
-        client.setPassword(clientCreateDto.getLoginInfo().getPassword());
+        //client.setEmail(clientCreateDto.getLoginInfo().getEmail());
+        //client.setPassword(clientCreateDto.getLoginInfo().getPassword());
+        client.setEmail(clientCreateDto.getEmail());
+        //client.setPassword(clientCreateDto.getPassword());
         client.setUsername(clientCreateDto.getUsername());
         //client.setHasaccess(true);
         client.setTempPassword("");
-        client.setHasaccess(false);
+        client.setHasaccess(true);
+        client.setPassword(PasswordSecurity.toHexString(PasswordSecurity.getSHA(clientCreateDto.getPassword())));
         return client;
     }
 }
