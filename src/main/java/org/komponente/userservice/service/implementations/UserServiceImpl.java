@@ -320,6 +320,7 @@ public class UserServiceImpl implements UserService {
             ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
             changePasswordNotification.setEmail(admin.getEmail());
             changePasswordNotification.setUsername(admin.getUsername());
+            changePasswordNotification.setReceiverId(admin.getId());
             changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
         adminRepository.save(admin);
@@ -362,6 +363,7 @@ public class UserServiceImpl implements UserService {
             ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
             changePasswordNotification.setEmail(manager.getEmail());
             changePasswordNotification.setUsername(manager.getUsername());
+            changePasswordNotification.setReceiverId(manager.getId());
             changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
         managerRepository.save(manager);
@@ -403,6 +405,7 @@ public class UserServiceImpl implements UserService {
             ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
             changePasswordNotification.setEmail(client.getEmail());
             changePasswordNotification.setUsername(client.getUsername());
+            changePasswordNotification.setReceiverId(client.getId());
             changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
         if(!Objects.equals(changeUserDto.getPassport(), client.getPassport())){
