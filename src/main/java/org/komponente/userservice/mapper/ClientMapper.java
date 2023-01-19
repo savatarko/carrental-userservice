@@ -42,6 +42,8 @@ public class ClientMapper {
         client.setTempPassword("");
         client.setHasaccess(true);
         client.setPassword(PasswordSecurity.toHexString(PasswordSecurity.getSHA(clientCreateDto.getPassword())));
+        client.setConfirmTempPassword(0L);
+        client.setTempPassword("");
         return client;
     }
 }

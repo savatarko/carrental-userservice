@@ -146,4 +146,13 @@ public class UserController {
     {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Confirm password change")
+    @PutMapping("/confirmpass/{id}")
+    public ResponseEntity<?> confirmPassword(@RequestHeader("Authorization") String authorization, @PathVariable Long id)
+    {
+        userService.confirmPassword(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

@@ -42,6 +42,8 @@ public class ManagerMapper {
         manager.setCompanyid(clientCreateDto.getCompanyId());
         manager.setDateofemployment(clientCreateDto.getDateofemployment());
         manager.setPassword(PasswordSecurity.toHexString(PasswordSecurity.getSHA(clientCreateDto.getPassword())));
+        manager.setConfirmTempPassword(0L);
+        manager.setTempPassword("");
         return manager;
     }
 }

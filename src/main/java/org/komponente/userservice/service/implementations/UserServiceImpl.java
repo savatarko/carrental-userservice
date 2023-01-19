@@ -10,6 +10,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.komponente.dto.client.ClientCreateDto;
 import org.komponente.dto.client.ClientDto;
+import org.komponente.dto.email.ChangePasswordNotification;
 import org.komponente.dto.email.RegisterNotification;
 import org.komponente.dto.manager.ManagerCreateDto;
 import org.komponente.dto.manager.ManagerDto;
@@ -286,26 +287,40 @@ public class UserServiceImpl implements UserService {
     public void changeAdmin(Long adminId, ChangeUserDto changeUserDto) {
         Admin admin = adminRepository.findById(adminId).orElseThrow(()->new NotFoundException("Admin with id " + adminId +" not found!"));
 
-        if(changeUserDto.getUsername()!=null) {
+        if(!Objects.equals(changeUserDto.getUsername(), admin.getUsername())) {
             admin.setUsername(changeUserDto.getUsername());
         }
-        if(changeUserDto.getName()!=null) {
+        if(!Objects.equals(changeUserDto.getName(), admin.getName())) {
             admin.setUsername(changeUserDto.getName());
         }
-        if(changeUserDto.getSurname()!=null) {
+        if(!Objects.equals(changeUserDto.getSurname(), admin.getSurname())) {
             admin.setSurname(changeUserDto.getSurname());
         }
-        if(changeUserDto.getNumber()!=null){
+        if(!Objects.equals(changeUserDto.getNumber(), admin.getNumber())){
             admin.setNumber(changeUserDto.getNumber());
         }
-        if(changeUserDto.getDateofbirth()!=null){
+        if(!changeUserDto.getDateofbirth().equals(admin.getDateofbirth())){
             admin.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getEmail()!=null){
+        if(!Objects.equals(changeUserDto.getEmail(), admin.getEmail())){
             admin.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getPassword()!=null){
-            admin.setTempPassword(changeUserDto.getPassword());
+        String pass = PasswordSecurity.toHexString(PasswordSecurity.getSHA(changeUserDto.getPassword()));
+        if(!Objects.equals(changeUserDto.getPassword(), pass)){
+            admin.setTempPassword(pass);
+            Random random = new Random();
+            Long activation = random.nextLong() & Long.MAX_VALUE;
+            while(activation!=0 && clientRepository.findClientByConfirmTempPassword(activation).isPresent()
+                    && managerRepository.findManagerByConfirmTempPassword(activation).isPresent()
+                    && adminRepository.findAdminByConfirmTempPassword(activation).isPresent()) {
+                activation = random.nextLong() & Long.MAX_VALUE;
+            }
+            admin.setConfirmTempPassword(activation);
+            admin.setTempPassword(pass);
+            ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
+            changePasswordNotification.setEmail(admin.getEmail());
+            changePasswordNotification.setUsername(admin.getUsername());
+            changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
         adminRepository.save(admin);
     }
@@ -314,26 +329,40 @@ public class UserServiceImpl implements UserService {
     public void changeManager(Long managerId, ChangeUserDto changeUserDto) {
         Manager manager = managerRepository.findById(managerId).orElseThrow(()->new NotFoundException("Admin with id " + managerId +" not found!"));
 
-        if(changeUserDto.getUsername()!=null) {
+        if(!Objects.equals(changeUserDto.getUsername(), manager.getUsername())) {
             manager.setUsername(changeUserDto.getUsername());
         }
-        if(changeUserDto.getName()!=null) {
+        if(!Objects.equals(changeUserDto.getName(), manager.getName())) {
             manager.setUsername(changeUserDto.getName());
         }
-        if(changeUserDto.getSurname()!=null) {
+        if(!Objects.equals(changeUserDto.getSurname(), manager.getSurname())) {
             manager.setSurname(changeUserDto.getSurname());
         }
-        if(changeUserDto.getNumber()!=null){
+        if(!Objects.equals(changeUserDto.getNumber(), manager.getNumber())){
             manager.setNumber(changeUserDto.getNumber());
         }
-        if(changeUserDto.getDateofbirth()!=null){
+        if(!changeUserDto.getDateofbirth().equals(manager.getDateofbirth())){
             manager.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getEmail()!=null){
+        if(changeUserDto.getEmail()!=manager.getEmail()){
             manager.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getPassword()!=null){
-            manager.setTempPassword(changeUserDto.getPassword());
+        String pass = PasswordSecurity.toHexString(PasswordSecurity.getSHA(changeUserDto.getPassword()));
+        if(!Objects.equals(changeUserDto.getPassword(), pass)){
+            manager.setTempPassword(pass);
+            Random random = new Random();
+            Long activation = random.nextLong() & Long.MAX_VALUE;
+            while(activation!=0 && clientRepository.findClientByConfirmTempPassword(activation).isPresent()
+                    && managerRepository.findManagerByConfirmTempPassword(activation).isPresent()
+                    && adminRepository.findAdminByConfirmTempPassword(activation).isPresent()) {
+                activation = random.nextLong() & Long.MAX_VALUE;
+            }
+            manager.setConfirmTempPassword(activation);
+            manager.setTempPassword(pass);
+            ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
+            changePasswordNotification.setEmail(manager.getEmail());
+            changePasswordNotification.setUsername(manager.getUsername());
+            changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
         managerRepository.save(manager);
     }
@@ -342,28 +371,41 @@ public class UserServiceImpl implements UserService {
     public void changeClient(Long clientId, ChangeUserDto changeUserDto) {
         Client client = clientRepository.findById(clientId).orElseThrow(()->new NotFoundException("Admin with id " + clientId +" not found!"));
 
-        if(changeUserDto.getUsername()!=null) {
+        if(!Objects.equals(changeUserDto.getUsername(), client.getUsername())) {
             client.setUsername(changeUserDto.getUsername());
         }
-        if(changeUserDto.getName()!=null) {
+        if(!Objects.equals(changeUserDto.getName(), client.getUsername())) {
             client.setUsername(changeUserDto.getName());
         }
-        if(changeUserDto.getSurname()!=null) {
+        if(!Objects.equals(changeUserDto.getSurname(), client.getSurname())) {
             client.setSurname(changeUserDto.getSurname());
         }
-        if(changeUserDto.getNumber()!=null){
+        if(!Objects.equals(changeUserDto.getNumber(), client.getNumber())){
             client.setNumber(changeUserDto.getNumber());
         }
-        if(changeUserDto.getDateofbirth()!=null){
+        if(!changeUserDto.getDateofbirth().equals(client.getDateofbirth())){
             client.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getEmail()!=null){
+        if(!Objects.equals(changeUserDto.getEmail(), client.getEmail())){
             client.setDateofbirth(changeUserDto.getDateofbirth());
         }
-        if(changeUserDto.getPassword()!=null){
-            client.setTempPassword(changeUserDto.getPassword());
+        String pass = PasswordSecurity.toHexString(PasswordSecurity.getSHA(changeUserDto.getPassword()));
+        if(!Objects.equals(changeUserDto.getPassword(), pass)){
+            Random random = new Random();
+            Long activation = random.nextLong() & Long.MAX_VALUE;
+            while(activation!=0 && clientRepository.findClientByConfirmTempPassword(activation).isPresent()
+                    && managerRepository.findManagerByConfirmTempPassword(activation).isPresent()
+                    && adminRepository.findAdminByConfirmTempPassword(activation).isPresent()) {
+                activation = random.nextLong() & Long.MAX_VALUE;
+            }
+            client.setConfirmTempPassword(activation);
+            client.setTempPassword(pass);
+            ChangePasswordNotification changePasswordNotification = new ChangePasswordNotification();
+            changePasswordNotification.setEmail(client.getEmail());
+            changePasswordNotification.setUsername(client.getUsername());
+            changePasswordNotification.setLink("http://localhost:8762/users/user/confirmpass/" + activation);
         }
-        if(changeUserDto.getPassport()!=null){
+        if(!Objects.equals(changeUserDto.getPassport(), client.getPassport())){
             client.setPassport(changeUserDto.getPassport());
         }
         clientRepository.save(client);
@@ -441,6 +483,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<RankDto> getAllRanks() {
         return rankRepository.findAll().stream().map(RankMapper::rankToRankDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void confirmPassword(Long id) {
+        if(id == 0L){
+            throw new ZeroIndexException("Zero index!");
+        }
+        Admin admin = adminRepository.findAdminByConfirmTempPassword(id).orElse(null);
+        if(admin!=null)
+        {
+            admin.setPassword(admin.getTempPassword());
+            admin.setConfirmTempPassword(0L);
+            admin.setTempPassword("");
+            adminRepository.save(admin);
+            return;
+        }
+        Manager manager = managerRepository.findManagerByConfirmTempPassword(id).orElse(null);
+        if(manager!=null)
+        {
+            manager.setPassword(manager.getTempPassword());
+            manager.setConfirmTempPassword(0L);
+            manager.setTempPassword("");
+            managerRepository.save(manager);
+            return;
+        }
+        Client client = clientRepository.findClientByConfirmTempPassword(id).orElseThrow(()->new NotFoundException("User with confirmation " + id +" not found!"));
+        client.setPassword(client.getTempPassword());
+        client.setConfirmTempPassword(0L);
+        client.setTempPassword("");
+        clientRepository.save(client);
     }
 
 

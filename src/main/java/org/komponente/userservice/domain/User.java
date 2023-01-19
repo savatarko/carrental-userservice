@@ -43,6 +43,7 @@ public class User {
     private Long activated;
 
     private String tempPassword;
+    private Long confirmTempPassword;
 
 
 }
