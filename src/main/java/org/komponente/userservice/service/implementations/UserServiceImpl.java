@@ -31,17 +31,19 @@ import org.komponente.userservice.repository.ManagerRepository;
 import org.komponente.userservice.repository.RankRepository;
 import org.komponente.userservice.security.PasswordSecurity;
 import org.komponente.userservice.security.token.TokenService;
+import org.komponente.userservice.service.NormalTokenService;
 import org.komponente.userservice.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.jms.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 @Transactional
@@ -50,11 +52,13 @@ public class UserServiceImpl implements UserService {
     private AdminRepository adminRepository;
     private ClientRepository clientRepository;
     private ManagerRepository managerRepository;
-    private TokenService tokenService;
+
+    @Autowired
+    private NormalTokenService tokenService;
     private RankRepository rankRepository;
     private Retry rentalServiceRetry;
 
-    public UserServiceImpl(AdminRepository adminRepository, ClientRepository clientRepository, ManagerRepository managerRepository, TokenService tokenService, RankRepository rankRepository, Retry rentalServiceRetry) {
+    public UserServiceImpl(AdminRepository adminRepository, ClientRepository clientRepository, ManagerRepository managerRepository, NormalTokenService tokenService, RankRepository rankRepository, Retry rentalServiceRetry) {
         this.adminRepository = adminRepository;
         this.clientRepository = clientRepository;
         this.managerRepository = managerRepository;
@@ -403,6 +407,40 @@ public class UserServiceImpl implements UserService {
             return UserMapper.userToUserDto(client);
         }
         throw new NotFoundException("User with id " + id + " not found!");
+    }
+
+    @Override
+    public String findClientMail(Long id) {
+        Admin admin = adminRepository.findById(id).orElse(null);
+        adminRepository.findAll();
+        if(admin!=null)
+        {
+            return admin.getEmail();
+        }
+        Manager manager = managerRepository.findById(id).orElse(null);
+        if (manager!=null)
+        {
+            return manager.getEmail();
+        }
+        Client client = clientRepository.findById(id).orElse(null);
+        if(client!=null)
+        {
+            return client.getEmail();
+        }
+        throw new NotFoundException("User with id " + id + " not found!");
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<UserDto> output = new ArrayList<>();
+        output.addAll(clientRepository.findAll().stream().map(UserMapper::userToUserDto).collect(Collectors.toList()));
+        output.addAll(managerRepository.findAll().stream().map(UserMapper::userToUserDto).collect(Collectors.toList()));
+        return output;
+    }
+
+    @Override
+    public List<RankDto> getAllRanks() {
+        return rankRepository.findAll().stream().map(RankMapper::rankToRankDto).collect(Collectors.toList());
     }
 
 

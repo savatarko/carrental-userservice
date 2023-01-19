@@ -13,6 +13,8 @@ import org.komponente.dto.user.ChangeUserDto;
 import org.komponente.dto.user.UserDto;
 import org.komponente.userservice.domain.Rank;
 
+import java.util.List;
+
 public interface UserService {
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
 
@@ -36,4 +38,9 @@ public interface UserService {
     void activateAccount(Long confirmation);
     Long getManagerCompanyId(Long id);
     UserDto findUser(Long id);
+    String findClientMail(Long id);
+
+    List<UserDto> getAllUsers();
+
+    List<RankDto> getAllRanks();
 }
