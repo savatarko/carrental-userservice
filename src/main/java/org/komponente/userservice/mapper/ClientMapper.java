@@ -44,6 +44,7 @@ public class ClientMapper {
         client.setPassword(PasswordSecurity.toHexString(PasswordSecurity.getSHA(clientCreateDto.getPassword())));
         client.setConfirmTempPassword(0L);
         client.setTempPassword("");
+        client.setDaysrented(0);
         return client;
     }
 }
