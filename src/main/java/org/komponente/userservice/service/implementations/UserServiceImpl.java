@@ -155,6 +155,7 @@ public class UserServiceImpl implements UserService {
         registerNotification.setName(manager.getName());
         registerNotification.setSurname(manager.getSurname());
         registerNotification.setLink("http://localhost:8762/users/user/register/confirm/" + activation);
+        registerNotification.setReceiverId(manager.getId());
 
         sendMessage(registerNotification, "newregistration");
         return ManagerMapper.managerToManagerDto(manager);
@@ -185,6 +186,7 @@ public class UserServiceImpl implements UserService {
         registerNotification.setName(client.getName());
         registerNotification.setSurname(client.getSurname());
         registerNotification.setLink("http://localhost:8762/users/user/register/confirm/" + activation);
+        registerNotification.setReceiverId(client.getId());
         sendMessage(registerNotification, "newregistration");
         return ClientMapper.clientToClientDto(client);
     }

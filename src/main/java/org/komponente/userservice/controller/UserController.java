@@ -108,9 +108,8 @@ public class UserController {
     }
 
     @ApiOperation(value = "Confirm email")
-    @PutMapping("/register/confirm/{id}")
-    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_CLIENT"})
-    public ResponseEntity<?> confirmEmail(@RequestHeader("Authorization") String authorization, @PathVariable Long id)
+    @GetMapping("/register/confirm/{id}")
+    public ResponseEntity<?> confirmEmail(@PathVariable Long id)
     {
         userService.activateAccount(id);
         return new ResponseEntity<>(HttpStatus.OK);
