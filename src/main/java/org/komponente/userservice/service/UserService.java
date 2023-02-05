@@ -44,4 +44,6 @@ public interface UserService {
 
     List<RankDto> getAllRanks();
     void confirmPassword(Long id);
+
+    void deleteUser(Long id);
 }

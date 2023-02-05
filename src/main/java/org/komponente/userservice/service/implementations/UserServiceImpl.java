@@ -520,5 +520,28 @@ public class UserServiceImpl implements UserService {
         clientRepository.save(client);
     }
 
+    @Override
+    public void deleteUser(Long id) {
+        Admin admin = adminRepository.findById(id).orElse(null);
+        if(admin!=null)
+        {
+            adminRepository.delete(admin);
+            return;
+        }
+        Manager manager = managerRepository.findById(id).orElse(null);
+        if (manager!=null)
+        {
+            managerRepository.delete(manager);
+            return;
+        }
+        Client client = clientRepository.findById(id).orElse(null);
+        if(client!=null)
+        {
+            clientRepository.delete(client);
+            return;
+        }
+        throw new NotFoundException("User with id " + id + " not found!");
+    }
+
 
 }

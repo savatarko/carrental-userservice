@@ -154,4 +154,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Delete account")
+    @PutMapping("/delete")
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_CLIENT"})
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authorization)
+    {
+        Claims claims = normaltokenService.parseToken(authorization);
+        userService.deleteUser(claims.get("id", Long.class));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
